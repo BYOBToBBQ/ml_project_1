@@ -10,8 +10,8 @@ def load_data(sub_sample=True, add_outlier=False):
         path_dataset, delimiter=",", skip_header=1, usecols=[1, 2])
     height = data[:, 0]
     weight = data[:, 1]
-    gender = np.genfromtxt(
-        path_dataset, delimiter=",", skip_header=1, usecols=[0],
+    type_of_particle = np.genfromtxt(
+        path_dataset, delimiter=",", skip_header=1, usecols=[1],
         converters={0: lambda x: 0 if b"Male" in x else 1})
     # Convert to metric system
     height *= 0.025
