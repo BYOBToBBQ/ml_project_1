@@ -1,5 +1,6 @@
 #implemented functions
 
+import numpy as np
 
 def least_squares(y,tx):
     w = inv(tx.T@tx)@tx.T@y
