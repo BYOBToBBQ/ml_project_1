@@ -29,13 +29,13 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma) :
         e = y - tx.dot(w)
         grad = -tx.T.dot(e) / len(e)
         
-        #calcultate the loss through the mean square method
-        loss = 1/2*np.mean(e**2)
-        
         #gradient descent
         w = w - grad * gamma
     
-    return loss, w
+    #calculate the loss through the mean square method
+    loss = np.mean(e**2)
+    
+    return w, loss
 
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma) :
