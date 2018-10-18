@@ -1,5 +1,6 @@
 train.csv
 test.csv
 sample-submission.csv
+sample_submission*
 __pycache__
 .ipynb_checkpoints
