@@ -4,60 +4,103 @@ import numpy as np
 
 
 def least_squares(y,tx):
-    #max likelihood estimator for w
     w = np.linalg.inv(tx.T@tx)@tx.T@y
     e=(y-tx@w)
     loss = 1/2*np.mean(e**2)
-    return loss,w
+    return w, loss
  
     
 def ridge_regression(y, tx, lambda_):
     lambda_prime = lambda_*2*len(y)
     w = np.linalg.inv(tx.T@tx + lambda_prime*np.eye(tx.shape[1]))@tx.T@y
     e = (y-tx@w)
-    loss = 1/2*np.mean(e**2)+lambda_*np.dot(w,w)
-    return loss,w
+    loss = 1/2*np.mean(e**2)+lambda_*np.dot(w.T,w)
+    return w, loss
 
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma) :
     
-    #initialize w
     w = initial_w
     
-    #loop for the iterations of the gradient
-    for loop in range(max_iters):
+    for i in range(max_iters):
         
-        #computes the errors and the gradient
+        #compute errors and gradient
         e = y - tx.dot(w)
         grad = -tx.T.dot(e) / len(e)
              
-        #gradient descent
+        #update weight vector
         w = w - grad * gamma
         
-    #calcultate the loss through the mean square method
+    #compute loss
     loss = 1/2*np.mean(e**2)
     
-    return loss, w
+    return w, loss
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma) :
     
-    #initialize w
     w = initial_w
     
-    #loop for the iterations of the gradient
-    for loop in range(max_iters):
+    for i in range(max_iters):
         
-	#generate the random line where the gradient is computed
+        #pick one observation for gradient computation
         n = np.random.randint(len(y))
-        #computes the errors and one value of the gradient 
+        #compute errors and gradient based on that observation 
         e = y[n] - tx[n].dot(w)
-        grad = (-tx[n] * e)  * np.ones(len(w))
+        grad = (-tx[n] * e)
               
-        #gradient descent
+        #update weight vector
         w = w - grad * gamma
         
-    #calcultate the loss through the mean square method
+    #compute loss
     err = y - tx.dot(w)
     loss = 1/2*np.mean(err**2)
     
-    return loss, w
+    return w, loss
+
+def sigmoid(z):
+    return 1 / (1+np.exp(-z))
+
+def loss_f_lr(h, y):
+    return -y.T.dot(np.log(h)) - (1-y).T.dot(np.log(1-h))
+
+def logistic_regression(y, tx, initial_w, max_iters, gamma):
+   
+    w = initial_w
+    h = 0
+    
+    for i in range(max_iters):
+    
+        #Compute x_t*w
+        z = np.dot(tx, w)
+        #Compute sigmoid of z
+        h = sigmoid(z)
+
+        #Compute gradient
+        gradient = tx.T.dot(h-y)
+        
+        #Update weight vector
+        update = gamma*gradient
+        w = w - update
+    
+    #Note that we return the total sample loss and not the mean loss
+    loss = loss_f_lr(h, y)
+    
+    return w, loss
+
+def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
+    
+    w = initial_w
+    h = 0
+    
+    for i in range(max_iters):
+    
+        z = np.dot(tx, w)
+        h = sigmoid(z)
+
+        #The regularization constraint is factored in the loss and gradient computation
+        gradient = tx.T.dot(h-y) + 2*lambda_*w
+        w = w - gamma*gradient
+    
+    loss = loss_f_lr(h, y) + lambda_*np.dot(w.T,w)
+    
+    return w, loss
