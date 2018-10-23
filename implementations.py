@@ -98,9 +98,9 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         h = sigmoid(z)
 
         #The regularization constraint is factored in the loss and gradient computation
-        gradient = tx.T.dot(h-y) + 2*lambda_*w
+        gradient = tx.T.dot(h-y) + lambda_*w
         w = w - gamma*gradient
     
-    loss = loss_f_lr(h, y) + lambda_*np.dot(w.T,w)
+    loss = loss_f_lr(h, y) + (1/2)*lambda_*np.dot(w.T,w)
     
     return w, loss
