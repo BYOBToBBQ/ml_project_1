@@ -11,12 +11,11 @@ def least_squares(y,tx):
  
     
 def ridge_regression(y, tx, lambda_):
-    lambda_prime = lambda_*2*len(y)
-    w = np.linalg.inv(tx.T@tx + lambda_prime*np.eye(tx.shape[1]))@tx.T@y
+    lambda_prime = lambda_*2*y.shape[0]
+    w = np.linalg.inv(tx.T@tx + lambda_prime*np.identity(tx.shape[1]))@tx.T@y
     e = (y-tx@w)
     loss = 1/2*np.mean(e**2)+lambda_*np.dot(w.T,w)
     return w, loss
-
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma) :
     
@@ -32,6 +31,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma) :
         w = w - grad * gamma
         
     #compute loss
+    e = y - tx.dot(w)
     loss = 1/2*np.mean(e**2)
     
     return w, loss
@@ -83,6 +83,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         w = w - update
     
     #Note that we return the total sample loss and not the mean loss
+    h = sigmoid(tx.dot(w))
     loss = loss_f_lr(h, y)
     
     return w, loss
@@ -101,6 +102,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         gradient = tx.T.dot(h-y) + lambda_*w
         w = w - gamma*gradient
     
+    h = sigmoid(tx.dot(w))
     loss = loss_f_lr(h, y) + (1/2)*lambda_*np.dot(w.T,w)
     
     return w, loss
