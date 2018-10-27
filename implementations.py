@@ -183,7 +183,7 @@ def model_pick_ridge(x, y, ratio=0.8, seed=1, degrees=range(1,2), lambdas=range(
         tx_tr = build_poly(x_tr, degree)
         tx_te = build_poly(x_te, degree)
         for lambda_ in lambdas:
-            weight = ridge_regression(y_tr, tx_tr, lambda_)
+            weight = ridge_regression(y_tr, tx_tr, lambda_)[0]
             rmse_tr.append((np.sqrt(2 * compute_mse(y_tr, tx_tr, weight)), degree, lambda_))
             rmse_te.append((np.sqrt(2 * compute_mse(y_te, tx_te, weight)), degree, lambda_))
             
